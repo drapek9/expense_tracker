@@ -8,6 +8,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  int? theCategory;
+  Map<int, String> categoryOptions = {1: "Jídlo a nápoje",2: "Doprava",3: "Zábava",4: "Zdraví a péče",5: "Oblečení a obuv",6: "Cestování a dovolená",7: "Účty a domácnost"};
+
+  void setCategoryNum(theValue){
+    setState(() {
+      theCategory = theValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,8 +32,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   theHintText: "Name",
                 ),
                 ElevatedButton(
-                  onPressed: (){},
-                  child: Text("Category")),
+                  onPressed: (){
+                    showCategoryList(context, categoryOptions, setCategoryNum);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white
+                  ),
+                  child: Text(
+                    theCategory != null ? categoryOptions[theCategory]! : "Category",
+                    style: TextStyle(
+                      color: theCategory != null ? Colors.black : const Color.fromARGB(255, 150, 150, 150),
+                    ),
+                    )),
                 TextButton.icon(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.red
@@ -78,3 +98,34 @@ class TextInput extends StatelessWidget {
         );
   }
 }
+
+void showCategoryList(context, optionsList, setFunction){
+
+  showModalBottomSheet(
+    context: context,
+    builder: (context){
+      return SizedBox(
+        height: 300,
+        width: double.infinity,
+        child: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          itemCount: optionsList.keys.length,
+          itemBuilder: (context, index) {
+            int theValue = optionsList.keys.toList()[index];
+            return SizedBox(
+              height: 100,
+              child: ElevatedButton(
+                onPressed: (){
+                  setFunction(theValue);
+                },
+                child: Text(
+                optionsList[theValue]
+              ),)
+            );
+          }
+          ),
+      );
+    });
+}
+
+// https://www.geeksforgeeks.org/flutter-scroll-snap-list/
