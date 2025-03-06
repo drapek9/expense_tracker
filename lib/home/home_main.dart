@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 ElevatedButton(
                   onPressed: (){
-                    showCategoryList(context, categoryOptions, setCategoryNum);
+                    showCategoryList(context, categoryOptions, setCategoryNum, theCategory);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white
@@ -100,54 +100,97 @@ class TextInput extends StatelessWidget {
   }
 }
 
-void showCategoryList(context, optionsList, setFunction){
-
+void showCategoryList(context, optionsList, setFunction, currentValue){
+  int finalValueIndex = currentValue != null ? optionsList.keys.toList().indexOf(currentValue) : 0;
+  int? finalValue = optionsList.keys.toList()[finalValueIndex];
   showModalBottomSheet(
     enableDrag: false,
     context: context,
     builder: (context){
       return SizedBox(
-        height: 300,
+        height: 350,
         width: double.infinity,
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children:[ ScrollSnapList(
-            onItemFocus: (index){
-            },
-            itemSize: 80,
-            itemBuilder: (context, index){
-              int theValue = optionsList.keys.toList()[index];
-              return SizedBox(
-                height: 80,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(0, 255, 255, 255),
-                    splashFactory: NoSplash.splashFactory,
-                    overlayColor: const Color.fromARGB(0, 255, 255, 255)
-                  ),
-                  onPressed: (){
-                    setFunction(theValue);
+        child: Column(
+          children: [
+            SizedBox(
+              height: 300,
+              child: Stack(
+                alignment: AlignmentDirectional.center,
+                children:[
+                  ScrollSnapList(
+                    initialIndex: finalValueIndex.toDouble(),
+                  onItemFocus: (index){
+                    finalValue = optionsList.keys.toList()[index];
                   },
-                  child: Text(
-                  optionsList[theValue],
-                  style: TextStyle(
-                    color: Colors.black
+                  itemSize: 80,
+                  itemBuilder: (context, index){
+                    return SizedBox(
+                      height: 80,
+                      child: Center(
+                        child: Text(
+                          optionsList[optionsList.keys.toList()[index]],
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold
+                          ),),
+                      )
+                    );
+                  },
+                  itemCount: optionsList.keys.length,
+                  scrollDirection: Axis.vertical,
+                  ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 80,
+                  child: Container(
+                    color: const Color.fromARGB(34, 0, 0, 0),
                   ),
                 )
-                ,)
-              );
-            },
-            itemCount: optionsList.keys.length,
-            scrollDirection: Axis.vertical,
+                ]
+              ),
             ),
-          SizedBox(
-            width: double.infinity,
-            height: 80,
-            child: Container(
-              color: const Color.fromARGB(34, 0, 0, 0),
-            ),
-          )
-          ]
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    style: TextButton.styleFrom(
+                      overlayColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.zero)
+                      )
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.black
+                      ),
+                      )),
+                ),
+                Expanded(
+                  child: TextButton(
+                    onPressed: (){
+                      setFunction(finalValue);
+                      Navigator.pop(context);
+                    },
+                    style: TextButton.styleFrom(
+                      overlayColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.zero)
+                      )
+                    ),
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(
+                        color: Colors.black
+                      ),
+                      )),
+                ),
+              ],
+            )
+          ],
         )
       );
     });
