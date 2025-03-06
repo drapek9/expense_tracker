@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_snap_list/scroll_snap_list.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -102,28 +103,52 @@ class TextInput extends StatelessWidget {
 void showCategoryList(context, optionsList, setFunction){
 
   showModalBottomSheet(
+    enableDrag: false,
     context: context,
     builder: (context){
       return SizedBox(
         height: 300,
         width: double.infinity,
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          itemCount: optionsList.keys.length,
-          itemBuilder: (context, index) {
-            int theValue = optionsList.keys.toList()[index];
-            return SizedBox(
-              height: 100,
-              child: ElevatedButton(
-                onPressed: (){
-                  setFunction(theValue);
-                },
-                child: Text(
-                optionsList[theValue]
-              ),)
-            );
-          }
-          ),
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children:[ ScrollSnapList(
+            onItemFocus: (index){
+            },
+            itemSize: 80,
+            itemBuilder: (context, index){
+              int theValue = optionsList.keys.toList()[index];
+              return SizedBox(
+                height: 80,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: const Color.fromARGB(0, 255, 255, 255)
+                  ),
+                  onPressed: (){
+                    setFunction(theValue);
+                  },
+                  child: Text(
+                  optionsList[theValue],
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                )
+                ,)
+              );
+            },
+            itemCount: optionsList.keys.length,
+            scrollDirection: Axis.vertical,
+            ),
+          SizedBox(
+            width: double.infinity,
+            height: 80,
+            child: Container(
+              color: const Color.fromARGB(34, 0, 0, 0),
+            ),
+          )
+          ]
+        )
       );
     });
 }
