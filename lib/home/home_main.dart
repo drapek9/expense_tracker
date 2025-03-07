@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,12 +12,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   int? theCategory;
+  DateTime theDate = DateTime.now();
+
+
   Map<int, String> categoryOptions = {1: "Jídlo a nápoje",2: "Doprava",3: "Zábava",4: "Zdraví a péče",5: "Oblečení a obuv",6: "Cestování a dovolená",7: "Účty a domácnost"};
 
   void setCategoryNum(theValue){
     setState(() {
       theCategory = theValue;
     });
+  }
+
+  void setDateTime(newDateTime){
+    setState(() {
+      theDate = newDateTime;
+    });
+  }
+
+  void saveExpense (theName, theType, theDate, thePrize){
+
   }
 
   @override
@@ -45,13 +59,39 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: theCategory != null ? Colors.black : const Color.fromARGB(255, 150, 150, 150),
                     ),
                     )),
-                TextButton.icon(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton.icon(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.red
                   ),
-                  onPressed: (){},
+                  onPressed: (){
+                    showChooserDate(context, theDate, setDateTime);
+                  },
                   icon: Icon(Icons.calendar_month),
-                  label: Text("Date")),
+                  label: Text(
+                    DateFormat("dd.MM.yyyy").format(theDate)
+                    )),
+
+                  SizedBox(
+                    width: 15,
+                  ),
+
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.red
+                    ),
+                    onPressed: (){
+                      showChooserTime(context, setDateTime, theDate);
+                    },
+                    icon: Icon(Icons.hourglass_bottom_sharp),
+                    label: Text(
+                      DateFormat("HH:mm").format(theDate)
+                      ))
+                  ],
+                ),
+                
                 SizedBox(
                   width: 200,
                   child: TextInput(
@@ -99,6 +139,50 @@ class TextInput extends StatelessWidget {
         );
   }
 }
+
+void showChooserDate (context, curDate, setFunction){
+  Future selectDate(BuildContext context) async => showDatePicker(
+    context: context,
+    firstDate: DateTime(2000, 01, 01),
+    lastDate: DateTime.now(),
+    initialDate: curDate ?? DateTime.now()
+    ).then((dateValue) {
+      if (dateValue != null){
+        DateTime newDate = DateTime(dateValue.year, dateValue.month, dateValue.day, curDate.hour, curDate.minute);
+        if (newDate.isAfter(DateTime.now())){
+            newDate = DateTime.now();
+          }
+        setFunction(newDate);
+      }
+    });
+  selectDate(context);
+
+  
+}
+
+void showChooserTime (context, setFunction, curDateTime){
+  Future selectTime(BuildContext context) async => showTimePicker(context: context,
+    initialTime: TimeOfDay(hour: curDateTime.hour, minute: curDateTime.minute)
+    ).then((theTime){
+      if (theTime != null){
+        try {
+          DateTime newDateTime = DateTime(curDateTime.year, curDateTime.month, curDateTime.day, theTime.hour, theTime.minute);
+          if (newDateTime.isAfter(DateTime.now())){
+            newDateTime = DateTime.now();
+          }
+          setFunction(newDateTime);
+        } catch (e){
+          print(e);
+        }
+        
+      }
+    
+      
+    });
+  
+  selectTime(context);
+}
+
 
 void showCategoryList(context, optionsList, setFunction, currentValue){
   int finalValueIndex = currentValue != null ? optionsList.keys.toList().indexOf(currentValue) : 0;
