@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -95,6 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: theCategory != null ? Colors.black : const Color.fromARGB(255, 150, 150, 150),
                     ),
                     )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton.icon(
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -199,6 +204,50 @@ class TextInput extends StatelessWidget {
         );
   }
 }
+
+void showChooserDate (context, curDate, setFunction){
+  Future selectDate(BuildContext context) async => showDatePicker(
+    context: context,
+    firstDate: DateTime(2000, 01, 01),
+    lastDate: DateTime.now(),
+    initialDate: curDate ?? DateTime.now()
+    ).then((dateValue) {
+      if (dateValue != null){
+        DateTime newDate = DateTime(dateValue.year, dateValue.month, dateValue.day, curDate.hour, curDate.minute);
+        if (newDate.isAfter(DateTime.now())){
+            newDate = DateTime.now();
+          }
+        setFunction(newDate);
+      }
+    });
+  selectDate(context);
+
+  
+}
+
+void showChooserTime (context, setFunction, curDateTime){
+  Future selectTime(BuildContext context) async => showTimePicker(context: context,
+    initialTime: TimeOfDay(hour: curDateTime.hour, minute: curDateTime.minute)
+    ).then((theTime){
+      if (theTime != null){
+        try {
+          DateTime newDateTime = DateTime(curDateTime.year, curDateTime.month, curDateTime.day, theTime.hour, theTime.minute);
+          if (newDateTime.isAfter(DateTime.now())){
+            newDateTime = DateTime.now();
+          }
+          setFunction(newDateTime);
+        } catch (e){
+          print(e);
+        }
+        
+      }
+    
+      
+    });
+  
+  selectTime(context);
+}
+
 
 void showChooserDate (context, curDate, setFunction){
   Future selectDate(BuildContext context) async => showDatePicker(
