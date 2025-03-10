@@ -164,12 +164,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ))),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "aha"),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "aha2"),
-        ]
-        ),
     );
   }
 }
