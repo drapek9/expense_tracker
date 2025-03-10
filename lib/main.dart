@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:expense_tracker/home/home_main.dart';
 import 'package:expense_tracker/spending_overview/spending_overview_main.dart';
 import 'package:expense_tracker/loading_main.dart';
+import 'package:expense_tracker/history/history_main.dart';
 
 void main(){
   runApp(const MainApp());
@@ -17,7 +18,8 @@ class MainApp extends StatelessWidget {
       routes: {
         "/loading": (context) => LoadingScreen(),
         "/home": (context) => HomeScreen(),
-        "/spending_overview": (context) => SpendingOverviewScreen()
+        "/spending_overview": (context) => SpendingOverviewScreen(),
+        "/history": (context) => HistoryScreen()
       },
     );
   }

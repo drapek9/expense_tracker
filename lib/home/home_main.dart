@@ -10,16 +10,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  TextEditingController nameController = TextEditingController();
+  TextEditingController prizeController = TextEditingController();
   int? theCategory;
+  int theCurrency = 1;
   DateTime theDate = DateTime.now();
+  bool nameOk = false;
+  bool prizeOk = false;
 
 
   Map<int, String> categoryOptions = {1: "Jídlo a nápoje",2: "Doprava",3: "Zábava",4: "Zdraví a péče",5: "Oblečení a obuv",6: "Cestování a dovolená",7: "Účty a domácnost"};
+  Map<int, String> currencyOptions = {1: "CZK", 2: "EUR", 3: "USD"};
 
   void setCategoryNum(theValue){
     setState(() {
       theCategory = theValue;
+    });
+  }
+
+  void setCurrencyNum(theValue){
+    setState(() {
+      theCurrency = theValue;
     });
   }
 
@@ -35,6 +46,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    nameController.addListener((){
+      if (nameController.text.trim() != "" && !nameOk){
+        setState(() {
+          nameOk = true;
+        });
+      } else if (nameOk && nameController.text.trim() == ""){
+        setState(() {
+          nameOk = false;
+        });
+      }
+
+    });
+    prizeController.addListener((){
+      if (prizeController.text.trim() != "" && !prizeOk){
+        setState(() {
+          prizeOk = true;
+        });
+      } else if (prizeOk && prizeController.text.trim() == ""){
+        setState(() {
+          prizeOk = false;
+        });
+      }
+      
+    });
     return Scaffold(
       backgroundColor: Colors.orange,
       body: SafeArea(
@@ -45,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 TextInput(
                   theHintText: "Name",
+                  theController: nameController,
                 ),
                 ElevatedButton(
                   onPressed: (){
@@ -97,21 +133,43 @@ class _HomeScreenState extends State<HomeScreen> {
                       ))
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: TextInput(
+                        theHintText: "Prize",
+                        theController: prizeController,
+                      )
+                      ), 
+                    ElevatedButton(
+                      onPressed: (){
+                        showCategoryList(context, currencyOptions, setCurrencyNum, theCurrency);
+                      },
+                      child: Text(
+                        currencyOptions[theCurrency] ?? "Currency"
+                      ))
+                  ]
+                ),
                 
-                SizedBox(
-                  width: 200,
-                  child: TextInput(
-                    theHintText: "Prize",
-                  )
-                  ),
                 ElevatedButton(
-                  onPressed: (){},
+                  onPressed: theCategory != null && nameOk && prizeOk ? () {
+                    print(prizeController.text);
+                    print(nameController.text);
+                  } : null,
                   child: Text(
                     "Save"
                   ))
               ],
             ),
           ))),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "aha"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "aha2"),
+        ]
+        ),
     );
   }
 }
@@ -119,12 +177,14 @@ class _HomeScreenState extends State<HomeScreen> {
 class TextInput extends StatelessWidget {
   // const TextInput({super.key});
   String? theHintText;
+  TextEditingController? theController;
 
-  TextInput({required this.theHintText});
+  TextInput({required this.theHintText, required this.theController});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+          controller: theController,
           decoration: InputDecoration(
             hintText: theHintText,
             filled: true,
