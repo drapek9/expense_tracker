@@ -14,14 +14,15 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/aha",
-      routes: {
-        "/loading": (context) => LoadingScreen(),
-        "/home": (context) => HomeScreen(),
-        "/spending_overview": (context) => SpendingOverviewScreen(),
-        "/history": (context) => HistoryScreen(),
-        "/aha": (context) => MainSwitchScreens()
-      },
+      // initialRoute: "/aha",
+      home: MainSwitchScreens(),
+      // routes: {
+      //   "/loading": (context) => LoadingScreen(),
+      //   // "/home": (context) => HomeScreen(),
+      //   // "/spending_overview": (context) => SpendingOverviewScreen(),
+      //   // "/history": (context) => HistoryScreen(),
+      //   "/aha": (context) => MainSwitchScreens()
+      // },
     );
   }
 }
@@ -67,6 +68,8 @@ class _MainSwitchScreensState extends State<MainSwitchScreens> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.black,
+        backgroundColor: const Color.fromARGB(255, 242, 242, 242),
         currentIndex: selectedIndex,
         onTap: bottomButtonTapped,
         items: [
