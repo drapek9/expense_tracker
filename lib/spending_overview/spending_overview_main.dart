@@ -86,19 +86,21 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
 
     theExpenses.forEach((one){
       if (theSumExpenses["category"]!.keys.toList().contains(one.categoryOptions[one.category])){
-        theSumExpenses["category"]![one.categoryOptions[one.category]]["prize"] += one.prize;
+        theSumExpenses["category"]![one.categoryOptions[one.category]]["prize_value"] += one.finalPrizeValue;
       } else {
         theSumExpenses["category"]![one.categoryOptions[one.category]] = {
-          "prize": one.prize
+          "prize_value": one.finalPrizeValue
           
         };
       }
 
       if (theSumExpenses["currency"]!.keys.toList().contains(one.currencyOptions[one.currency])){
         theSumExpenses["currency"]![one.currencyOptions[one.currency]]["prize_currency"] += one.prize;
+        theSumExpenses["currency"]![one.currencyOptions[one.currency]]["prize_currency_value"] += one.finalPrizeValue;
       } else {
         theSumExpenses["currency"]![one.currencyOptions[one.currency]] = {
-          "prize_currency": one.prize
+          "prize_currency": one.prize,
+          "prize_currency_value": one.finalPrizeValue,
         };
       }
 
@@ -136,7 +138,7 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
                       barGroups: sumExpensesCategory["category"]!.entries.map((one) {
                         xNum ++;
                         xNumValue[xNum] = one;
-                        return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize"].toDouble(), color: Colors.blue, width: 30, borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)))]);
+                        return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize_value"].toDouble(), color: Colors.blue, width: 30, borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)))]);
                       }).toList(),
                       titlesData: FlTitlesData(
                         leftTitles: AxisTitles(
@@ -170,9 +172,11 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
                           showTitles: true,
                           getTitlesWidget: (value, meta) {
                             return Text(
-                              "${xNumValue[value].value["prize"]}",
+                              "${xNumValue[value].value["prize_value"]} EUR",
                               style: TextStyle(
-                                color: Colors.black
+                                color: Colors.black,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold
                               ),
                               );
                           }
@@ -199,7 +203,7 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
                     centerSpaceRadius: 0,
                     sections: sumExpensesCategory["currency"]!.entries.map((one){
                       return PieChartSectionData(
-                        value: one.value["prize_currency"].toDouble(),
+                        value: one.value["prize_currency_value"].toDouble(),
                         color: Colors.red,
                         radius: 80,
                         title: "${one.value["prize_currency"]} ${one.key}",
