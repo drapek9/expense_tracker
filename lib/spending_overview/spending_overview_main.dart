@@ -14,7 +14,7 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
   final List allExpenses = [
       Expense(
         category: 2,
-        currency: 1,
+        currency: 0,
         name: "Shoes",
         prize: 15,
         time: DateTime(2024, 12, 10, 12, 51)
@@ -35,7 +35,7 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
       ),
       Expense(
         category: 0,
-        currency: 1,
+        currency: 2,
         name: "Shoes",
         prize: 15,
         time: DateTime(2024, 12, 10, 12, 51)
@@ -49,14 +49,14 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
       ),
       Expense(
         category: 1,
-        currency: 1,
+        currency: 0,
         name: "Shoes",
         prize: 15,
         time: DateTime(2024, 12, 10, 12, 51)
       ),
       Expense(
         category: 1,
-        currency: 1,
+        currency: 2,
         name: "Shoes",
         prize: 15,
         time: DateTime(2024, 12, 10, 12, 51)
@@ -82,10 +82,9 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
   }
 
   Map<String, Map> createSumCategory(List theExpenses){
-    Map<String, Map> theSumExpenses = {"category": {}};
+    Map<String, Map> theSumExpenses = {"category": {}, "currency": {}};
 
     theExpenses.forEach((one){
-      print(one);
       if (theSumExpenses["category"]!.keys.toList().contains(one.categoryOptions[one.category])){
         theSumExpenses["category"]![one.categoryOptions[one.category]]["prize"] += one.prize;
       } else {
@@ -94,6 +93,15 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
           
         };
       }
+
+      if (theSumExpenses["currency"]!.keys.toList().contains(one.currencyOptions[one.currency])){
+        theSumExpenses["currency"]![one.currencyOptions[one.currency]]["prize_currency"] += one.prize;
+      } else {
+        theSumExpenses["currency"]![one.currencyOptions[one.currency]] = {
+          "prize_currency": one.prize
+        };
+      }
+
     });
 
     return theSumExpenses;
@@ -189,18 +197,17 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
                 child: PieChart(
                   PieChartData(
                     centerSpaceRadius: 0,
-                    sections: [
-                      PieChartSectionData(
-                        value: 30,
+                    sections: sumExpensesCategory["currency"]!.entries.map((one){
+                      return PieChartSectionData(
+                        value: one.value["prize_currency"].toDouble(),
                         color: Colors.red,
-                        radius: 80
-                      ),
-                      PieChartSectionData(
-                        value: 40,
-                        color: Colors.blue,
-                        radius: 80
-                      ),
-                    ]
+                        radius: 80,
+                        title: "${one.value["prize_currency"]} ${one.key}",
+                        titleStyle: TextStyle(
+                          fontWeight: FontWeight.bold
+                        )
+                      );
+                    }).toList()
                   ),
                   duration: Duration(milliseconds: 150), // Optional
                   curve: Curves.linear, // Optional
