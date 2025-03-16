@@ -103,53 +103,113 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 200,
-            child: BarChart(
-              BarChartData(
-                // titlesData: FlTitlesData(show: false),
-                borderData: FlBorderData(show: false),
-                gridData: FlGridData(show: false),
-                barGroups: sumExpensesCategory["category"]!.entries.map((one) {
-                  xNum ++;
-                  xNumValue[xNum] = one;
-                  return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize"].toDouble(), color: Colors.blue, width: 50, borderRadius: BorderRadius.all(Radius.circular(12)))]);
-                }).toList(),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              spacing: 20,
+              children: [
+                Text(
+                  "Spendings by category",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16
                   ),
-                  rightTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)
-                  ),
-                  bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (value, meta) {
-                    return Text(xNumValue[value].key);
-                  },
                 ),
-              ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        "${xNumValue[value].value["prize"]}",
-                        style: TextStyle(
-                          color: Colors.black
+                SizedBox(
+                  height: 150,
+                  child: BarChart(
+                    BarChartData(
+                      // titlesData: FlTitlesData(show: false),
+                      borderData: FlBorderData(show: false),
+                      gridData: FlGridData(show: false),
+                      barGroups: sumExpensesCategory["category"]!.entries.map((one) {
+                        xNum ++;
+                        xNumValue[xNum] = one;
+                        return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize"].toDouble(), color: Colors.blue, width: 30, borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)))]);
+                      }).toList(),
+                      titlesData: FlTitlesData(
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)
                         ),
-                        );
-                    }
-                  )
-                )
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)
+                        ),
+                        bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          return SizedBox(
+                            width: 75,
+                            child: Center(
+                              child: Text(
+                                // softWrap: true,
+                                xNumValue[value].key,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 10
+                                ),
+                                ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            return Text(
+                              "${xNumValue[value].value["prize"]}",
+                              style: TextStyle(
+                                color: Colors.black
+                              ),
+                              );
+                          }
+                        )
+                      )
+                      ),
+                  )),
                 ),
-            )),
-          ),
-        ],
+              ],
+            ),
+          Column(
+            spacing: 20,
+            children: [
+              Text(
+                "Spendings by currency ",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16
+                  )),
+              SizedBox(
+                height: 150,
+                child: PieChart(
+                  PieChartData(
+                    centerSpaceRadius: 0,
+                    sections: [
+                      PieChartSectionData(
+                        value: 30,
+                        color: Colors.red,
+                        radius: 80
+                      ),
+                      PieChartSectionData(
+                        value: 40,
+                        color: Colors.blue,
+                        radius: 80
+                      ),
+                    ]
+                  ),
+                  duration: Duration(milliseconds: 150), // Optional
+                  curve: Curves.linear, // Optional
+                ),
+              )
+            ],
+          )
+          ],
+        ),
       ),
     );
   }
