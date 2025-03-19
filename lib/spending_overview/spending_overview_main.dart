@@ -70,10 +70,13 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
       ),
   ];
 
+  List graphColors = [Colors.red, Colors.blue, Colors.green, Colors.orange, Colors.purple, Colors.brown, Colors.black];
+
   Map<String, Map> sumExpensesCategory = {};
 
   int xNum = -1;
   Map xNumValue = {};
+  int xNum2 = -1;
 
   @override
   void initState() {
@@ -112,6 +115,9 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    xNum = -1;
+    xNum2 = -1;
+    xNumValue = {};
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 40),
@@ -138,7 +144,7 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
                       barGroups: sumExpensesCategory["category"]!.entries.map((one) {
                         xNum ++;
                         xNumValue[xNum] = one;
-                        return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize_value"].toDouble(), color: Colors.blue, width: 30, borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)))]);
+                        return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize_value"].toDouble(), color: graphColors[xNum], width: 30, borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)))]);
                       }).toList(),
                       titlesData: FlTitlesData(
                         leftTitles: AxisTitles(
@@ -202,9 +208,10 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
                   PieChartData(
                     centerSpaceRadius: 0,
                     sections: sumExpensesCategory["currency"]!.entries.map((one){
+                      xNum2 ++;
                       return PieChartSectionData(
                         value: one.value["prize_currency_value"].toDouble(),
-                        color: Colors.red,
+                        color: graphColors[xNum2],
                         radius: 80,
                         title: "${one.value["prize_currency"]} ${one.key}",
                         titleStyle: TextStyle(
