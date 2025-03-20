@@ -1,11 +1,16 @@
+import 'package:expense_tracker/bloc_app/expense_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/home/home_main.dart';
 import 'package:expense_tracker/spending_overview/spending_overview_main.dart';
-import 'package:expense_tracker/loading_main.dart';
 import 'package:expense_tracker/history/history_main.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main(){
-  runApp(const MainApp());
+  runApp(
+    BlocProvider(
+      create: (context) => ExpenseBloc(),
+      child: MainApp(),)
+    );
 }
 
 class MainApp extends StatelessWidget {
@@ -14,15 +19,12 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // initialRoute: "/aha",
       home: MainSwitchScreens(),
-      // routes: {
-      //   "/loading": (context) => LoadingScreen(),
-      //   // "/home": (context) => HomeScreen(),
-      //   // "/spending_overview": (context) => SpendingOverviewScreen(),
-      //   // "/history": (context) => HistoryScreen(),
-      //   "/aha": (context) => MainSwitchScreens()
-      // },
+      routes: {
+        "/home": (context) => HomeScreen(),
+        "/spending_overview": (context) => SpendingOverviewScreen(),
+        "/history": (context) => HistoryScreen(),
+      },
     );
   }
 }

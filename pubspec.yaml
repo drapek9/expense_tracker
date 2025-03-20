@@ -37,6 +37,7 @@ dependencies:
   scroll_snap_list: ^0.9.1
   intl: ^0.20.2
   fl_chart: ^0.70.2
+  flutter_bloc: ^9.1.0
 
 dev_dependencies:
   flutter_test:

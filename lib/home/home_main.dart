@@ -1,4 +1,8 @@
+import 'package:expense_tracker/bloc_app/expense_bloc.dart';
+import 'package:expense_tracker/bloc_app/expense_events.dart';
+import 'package:expense_tracker/classes_types/classes_types_main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:intl/intl.dart';
 
@@ -46,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final blocProv = context.read<ExpenseBloc>();
     nameController.addListener((){
       if (nameController.text.trim() != "" && !nameOk){
         setState(() {
@@ -155,8 +160,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 
                 ElevatedButton(
                   onPressed: theCategory != null && nameOk && prizeOk ? () {
-                    print(prizeController.text);
-                    print(nameController.text);
+                    blocProv.add(OnAddExpense(
+                      Expense(
+                        category: theCategory,
+                        currency: theCurrency,
+                        name: nameController.text,
+                        prize: double.parse(prizeController.text),
+                        time: theDate
+                      )
+                    ));
                   } : null,
                   child: Text(
                     "Save"
