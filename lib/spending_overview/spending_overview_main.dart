@@ -25,118 +25,136 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
     xNum = -1;
     xNum2 = -1;
     xNumValue = {};
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40),
-        child: BlocBuilder<ExpenseBloc,ExpenseState>(
-          builder: (context, state){
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                spacing: 20,
+    return Scaffold(
+      backgroundColor: Colors.orange,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 40),
+          child: BlocBuilder<ExpenseBloc,ExpenseState>(
+            builder: (context, state){
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(
-                    "Spendings by category",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16
-                    ),
-                  ),
-                  SizedBox(
-                    height: 150,
-                    child: BarChart(
-                      BarChartData(
-                        // titlesData: FlTitlesData(show: false),
-                        borderData: FlBorderData(show: false),
-                        gridData: FlGridData(show: false),
-                        barGroups: state.allExpensesOverview["category"]!.entries.map((one) {
-                          xNum ++;
-                          xNumValue[xNum] = one;
-                          return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize_value"].toDouble(), color: graphColors[xNum], width: 30, borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)))]);
-                        }).toList(),
-                        titlesData: FlTitlesData(
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false)
+                  Card(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: Column(
+                        spacing: 20,
+                        children: [
+                          Text(
+                            "Spendings by category",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16
+                            ),
                           ),
-                          rightTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false)
-                          ),
-                          bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (value, meta) {
-                            return SizedBox(
-                              width: 75,
-                              child: Center(
-                                child: Text(
-                                  // softWrap: true,
-                                  xNumValue[value].key,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 10
+                          SizedBox(
+                            height: 150,
+                            child: BarChart(
+                              BarChartData(
+                                // titlesData: FlTitlesData(show: false),
+                                borderData: FlBorderData(show: false),
+                                gridData: FlGridData(show: false),
+                                barGroups: state.allExpensesOverview["category"]!.entries.map((one) {
+                                  xNum ++;
+                                  xNumValue[xNum] = one;
+                                  return BarChartGroupData(x: xNum, barRods: [BarChartRodData(toY: one.value["prize_value"].toDouble(), color: graphColors[xNum], width: 30, borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)))]);
+                                }).toList(),
+                                titlesData: FlTitlesData(
+                                  leftTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false)
                                   ),
+                                  rightTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false)
                                   ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                        topTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (value, meta) {
-                              return Text(
-                                "${xNumValue[value].value["prize_value"]} EUR",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold
+                                  bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: (value, meta) {
+                                    return SizedBox(
+                                      width: 75,
+                                      child: Center(
+                                        child: Text(
+                                          // softWrap: true,
+                                          xNumValue[value].key,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 10
+                                          ),
+                                          ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                                );
-                            }
-                          )
-                        )
-                        ),
-                    )),
-                  ),
-                ],
-              ),
-            Column(
-              spacing: 20,
-              children: [
-                Text(
-                  "Spendings by currency ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16
-                    )),
-                SizedBox(
-                  height: 150,
-                  child: PieChart(
-                    PieChartData(
-                      centerSpaceRadius: 0,
-                      sections: state.allExpensesOverview["currency"]!.entries.map((one){
-                        xNum2 ++;
-                        return PieChartSectionData(
-                          value: one.value["prize_currency_value"].toDouble(),
-                          color: graphColors[xNum2],
-                          radius: 80,
-                          title: "${one.value["prize_currency"]} ${one.key}",
-                          titleStyle: TextStyle(
-                            fontWeight: FontWeight.bold
-                          )
-                        );
-                      }).toList()
+                              ),
+                                topTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    getTitlesWidget: (value, meta) {
+                                      return Text(
+                                        "${xNumValue[value].value["prize_value"]} EUR",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                        );
+                                    }
+                                  )
+                                )
+                                ),
+                            )),
+                          ),
+                        ],
+                      ),
                     ),
-                    duration: Duration(milliseconds: 150), // Optional
-                    curve: Curves.linear, // Optional
+                  ),
+                Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Column(
+                      spacing: 20,
+                      children: [
+                        Text(
+                          "Spendings by currency ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16
+                            )),
+                        SizedBox(
+                          height: 150,
+                          child: PieChart(
+                            PieChartData(
+                              centerSpaceRadius: 0,
+                              sections: state.allExpensesOverview["currency"]!.entries.map((one){
+                                xNum2 ++;
+                                return PieChartSectionData(
+                                  value: one.value["prize_currency_value"].toDouble(),
+                                  color: graphColors[xNum2],
+                                  radius: 80,
+                                  title: "${one.value["prize_currency"]} ${one.key}",
+                                  titleStyle: TextStyle(
+                                    fontWeight: FontWeight.bold
+                                  )
+                                );
+                              }).toList()
+                            ),
+                            duration: Duration(milliseconds: 150), // Optional
+                            curve: Curves.linear, // Optional
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 )
-              ],
-            )
-            ],
-          );}
+                ],
+              ),
+            );}
+          ),
         ),
       ),
     );

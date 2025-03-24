@@ -22,7 +22,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.orange,
       body: SafeArea(
         child: BlocBuilder<ExpenseBloc, ExpenseState>(builder: (context, state){
           return ListView.builder(

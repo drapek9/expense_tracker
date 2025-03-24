@@ -80,12 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Column(
+              spacing: 20,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextInput(
                   theHintText: "Name",
                   theController: nameController,
+                  typeInput: "normal",
                 ),
                 ElevatedButton(
                   onPressed: (){
@@ -132,32 +135,49 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: (){
                       showChooserTime(context, setDateTime, theDate);
                     },
-                    icon: Icon(Icons.hourglass_bottom_sharp),
+                    icon: Icon(Icons.hourglass_bottom_sharp, color: Colors.black,),
                     label: Text(
-                      DateFormat("HH:mm").format(theDate)
+                      DateFormat("HH:mm").format(theDate),
+                      style: TextStyle(
+                        color: Colors.black
+                      ),
                       ))
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 15,
                   children: [
                     SizedBox(
-                      width: 200,
+                      width: 125,
                       child: TextInput(
                         theHintText: "Prize",
                         theController: prizeController,
+                        typeInput: "number",
                       )
-                      ), 
+                      ),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        )
+                      ),
                       onPressed: (){
                         showCategoryList(context, currencyOptions, setCurrencyNum, theCurrency);
                       },
                       child: Text(
-                        currencyOptions[theCurrency] ?? "Currency"
+                        currencyOptions[theCurrency] ?? "Currency",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12
+                        ),
                       ))
                   ]
                 ),
-                
+                SizedBox(
+                  height: 60,
+                ),
                 ElevatedButton(
                   onPressed: theCategory != null && nameOk && prizeOk ? () {
                     blocProv.add(OnAddExpense(
@@ -165,10 +185,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         category: theCategory,
                         currency: theCurrency,
                         name: nameController.text,
-                        prize: double.parse(prizeController.text),
+                        prize: double.parse(prizeController.text.replaceAll(",", ".")),
                         time: theDate
                       )
                     ));
+
+                    nameController.text = "";
+                    prizeController.text = "";
+
+                    setState(() {
+                      theCategory = null;
+                      nameOk = false;
+                      prizeOk = false;
+                    });
                   } : null,
                   child: Text(
                     "Save"
@@ -182,14 +211,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class TextInput extends StatelessWidget {
   // const TextInput({super.key});
-  String? theHintText;
-  TextEditingController? theController;
+  String theHintText;
+  TextEditingController theController;
+  String typeInput;
 
-  TextInput({required this.theHintText, required this.theController});
+  TextInput({required this.theHintText, required this.theController, required this.typeInput});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      keyboardType: typeInput == "number" ? TextInputType.number : TextInputType.text,
           controller: theController,
           decoration: InputDecoration(
             hintText: theHintText,
