@@ -22,6 +22,20 @@ class _HomeScreenState extends State<HomeScreen> {
   bool nameOk = false;
   bool prizeOk = false;
 
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _prizeFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _nameFocusNode.dispose();
+    _prizeFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _removeFocus() {
+    FocusScope.of(context).requestFocus(FocusNode()); // Přesun fokusu pryč
+  }
+
 
   Map<int, String> categoryOptions = {1: "Jídlo a nápoje",2: "Doprava",3: "Zábava",4: "Zdraví a péče",5: "Oblečení a obuv",6: "Cestování a dovolená",7: "Účty a domácnost"};
   Map<int, String> currencyOptions = {1: "CZK", 2: "EUR", 3: "USD"};
@@ -75,136 +89,152 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       
     });
-    return Scaffold(
-      backgroundColor: Colors.orange,
-      body: SafeArea(
-        child: Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              spacing: 20,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextInput(
-                  theHintText: "Name",
-                  theController: nameController,
-                  typeInput: "normal",
-                ),
-                ElevatedButton(
-                  onPressed: (){
-                    showCategoryList(context, categoryOptions, setCategoryNum, theCategory);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white
-                  ),
-                  child: Text(
-                    theCategory != null ? categoryOptions[theCategory]! : "Category",
-                    style: TextStyle(
-                      color: theCategory != null ? Colors.black : const Color.fromARGB(255, 150, 150, 150),
-                    ),
-                    )),
-                Row(
+    return GestureDetector(
+      onTap: _removeFocus,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.orange,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 80, left: 20, right: 20),
+                child: Column(
+                  spacing: 20,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextButton.icon(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white
-                  ),
-                  onPressed: (){
-                    showChooserDate(context, theDate, setDateTime);
-                  },
-                  icon: Icon(
-                    Icons.calendar_month,
-                    color: Colors.black,
+                    TextInput(
+                      theHintText: "Name",
+                      theController: nameController,
+                      typeInput: "normal",
+                      theFocusNode: _nameFocusNode,
                     ),
-                  label: Text(
-                    DateFormat("dd.MM.yyyy").format(theDate),
-                    style: TextStyle(
-                      color: Colors.black
-                    ),
-                    )),
-
-                  SizedBox(
-                    width: 15,
-                  ),
-
-                  TextButton.icon(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.white
-                    ),
-                    onPressed: (){
-                      showChooserTime(context, setDateTime, theDate);
-                    },
-                    icon: Icon(Icons.hourglass_bottom_sharp, color: Colors.black,),
-                    label: Text(
-                      DateFormat("HH:mm").format(theDate),
-                      style: TextStyle(
-                        color: Colors.black
+                    ElevatedButton(
+                      onPressed: (){
+                        _removeFocus();
+                        showCategoryList(context, categoryOptions, setCategoryNum, theCategory);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white
                       ),
+                      child: Text(
+                        theCategory != null ? categoryOptions[theCategory]! : "Category",
+                        style: TextStyle(
+                          color: theCategory != null ? Colors.black : const Color.fromARGB(255, 150, 150, 150),
+                        ),
+                        )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton.icon(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white
+                      ),
+                      onPressed: (){
+                        _removeFocus();
+                        showChooserDate(context, theDate, setDateTime);
+                      },
+                      icon: Icon(
+                        Icons.calendar_month,
+                        color: Colors.black,
+                        ),
+                      label: Text(
+                        DateFormat("dd.MM.yyyy").format(theDate),
+                        style: TextStyle(
+                          color: Colors.black
+                        ),
+                        )),
+                    
+                      SizedBox(
+                        width: 15,
+                      ),
+                    
+                      TextButton.icon(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white
+                        ),
+                        onPressed: (){
+                          _removeFocus();
+                          showChooserTime(context, setDateTime, theDate);
+                        },
+                        icon: Icon(Icons.hourglass_bottom_sharp, color: Colors.black,),
+                        label: Text(
+                          DateFormat("HH:mm").format(theDate),
+                          style: TextStyle(
+                            color: Colors.black
+                          ),
+                          ))
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 15,
+                      children: [
+                        SizedBox(
+                          width: 125,
+                          child: TextInput(
+                            theHintText: "Prize",
+                            theController: prizeController,
+                            typeInput: "number",
+                            theFocusNode: _prizeFocusNode,
+                          )
+                          ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                            )
+                          ),
+                          onPressed: (){
+                            _removeFocus();
+                            showCategoryList(context, currencyOptions, setCurrencyNum, theCurrency);
+                          },
+                          child: Text(
+                            currencyOptions[theCurrency] ?? "Currency",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12
+                            ),
+                          ))
+                      ]
+                    ),
+                    SizedBox(
+                      height: 60,
+                    ),
+                    ElevatedButton(
+                      onPressed: theCategory != null && nameOk && prizeOk ? () {
+                        _removeFocus();
+                        blocProv.add(OnAddExpense(
+                          Expense(
+                            category: theCategory,
+                            currency: theCurrency,
+                            name: nameController.text,
+                            prize: double.parse(prizeController.text.replaceAll(",", ".")),
+                            time: theDate
+                          )
+                        ));
+                    
+                        nameController.text = "";
+                        prizeController.text = "";
+                    
+                        setState(() {
+                          theCategory = null;
+                          nameOk = false;
+                          prizeOk = false;
+                        });
+                      } : null,
+                      child: Text(
+                        "Save"
                       ))
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 15,
-                  children: [
-                    SizedBox(
-                      width: 125,
-                      child: TextInput(
-                        theHintText: "Prize",
-                        theController: prizeController,
-                        typeInput: "number",
-                      )
-                      ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
-                        )
-                      ),
-                      onPressed: (){
-                        showCategoryList(context, currencyOptions, setCurrencyNum, theCurrency);
-                      },
-                      child: Text(
-                        currencyOptions[theCurrency] ?? "Currency",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12
-                        ),
-                      ))
-                  ]
-                ),
-                SizedBox(
-                  height: 60,
-                ),
-                ElevatedButton(
-                  onPressed: theCategory != null && nameOk && prizeOk ? () {
-                    blocProv.add(OnAddExpense(
-                      Expense(
-                        category: theCategory,
-                        currency: theCurrency,
-                        name: nameController.text,
-                        prize: double.parse(prizeController.text.replaceAll(",", ".")),
-                        time: theDate
-                      )
-                    ));
-
-                    nameController.text = "";
-                    prizeController.text = "";
-
-                    setState(() {
-                      theCategory = null;
-                      nameOk = false;
-                      prizeOk = false;
-                    });
-                  } : null,
-                  child: Text(
-                    "Save"
-                  ))
-              ],
-            ),
-          ))),
+              ),
+            ))),
+      ),
     );
   }
 }
@@ -214,13 +244,15 @@ class TextInput extends StatelessWidget {
   String theHintText;
   TextEditingController theController;
   String typeInput;
+  FocusNode theFocusNode;
 
-  TextInput({required this.theHintText, required this.theController, required this.typeInput});
+  TextInput({required this.theHintText, required this.theController, required this.typeInput, required this.theFocusNode});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      keyboardType: typeInput == "number" ? TextInputType.number : TextInputType.text,
+          focusNode: theFocusNode,
+          keyboardType: typeInput == "number" ? TextInputType.number : TextInputType.text,
           controller: theController,
           decoration: InputDecoration(
             hintText: theHintText,

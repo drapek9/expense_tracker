@@ -7,7 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main(){
   runApp(
-    BlocProvider(
+    
+    BlocProvider<ExpenseBloc>(
       create: (context) => ExpenseBloc(),
       child: MainApp(),)
     );
