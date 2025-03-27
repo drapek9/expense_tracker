@@ -12,7 +12,7 @@ class SpendingOverviewScreen extends StatefulWidget {
   State<SpendingOverviewScreen> createState() => _SpendingOverviewScreenState();
 }
 
-class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
+class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> with AutomaticKeepAliveClientMixin {
 
   List graphColors = [Colors.red, Colors.blue, Colors.green, Colors.orange, Colors.purple, Colors.brown, Colors.black];
 
@@ -21,7 +21,11 @@ class _SpendingOverviewScreenState extends State<SpendingOverviewScreen> {
   int xNum2 = -1;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     xNum = -1;
     xNum2 = -1;
     xNumValue = {};
